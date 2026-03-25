@@ -124,3 +124,30 @@ def test_correct_selected_choices_returns_only_correct_selected_ids():
     result = question.correct_selected_choices([c1.id, c2.id])
 
     assert result == [c1.id]
+
+@pytest.fixture
+def multiple_choice_question():
+    question = Question(title='Capital of France', max_selections=2)
+    c1 = question.add_choice('Paris', is_correct=True)
+    c2 = question.add_choice('Lyon', is_correct=False)
+    c3 = question.add_choice('Marseille', is_correct=False)
+    c4 = question.add_choice('Nice', is_correct=False)
+    return question, c1, c2, c3, c4
+
+
+def test_fixture_question_has_expected_structure(multiple_choice_question):
+    question, c1, c2, c3, c4 = multiple_choice_question
+
+    assert question.title == 'Capital of France'
+    assert question.max_selections == 2
+    assert len(question.choices) == 4
+    assert c1.is_correct is True
+    assert [c.id for c in question.choices] == [1, 2, 3, 4]
+
+
+def test_fixture_correct_selected_choices_uses_reused_question(multiple_choice_question):
+    question, c1, c2, c3, c4 = multiple_choice_question
+
+    result = question.correct_selected_choices([c1.id, c2.id])
+
+    assert result == [c1.id]
